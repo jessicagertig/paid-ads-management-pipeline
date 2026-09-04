@@ -365,10 +365,20 @@ def extract_text_from_response(response) -> str:
 # ---------------------------------------------------------------------------
 
 def commit_and_push(paths: list[str], message: str) -> None:
-    """Stage, commit and push. No-op when nothing changed."""
+    """Stage, commit and push. No-op when nothing changed.
+
+    Paths that do not exist are skipped rather than passed to git, which exits
+    128 on a missing pathspec. A state file only appears once its first row is
+    written, so on early runs some of these legitimately do not exist yet.
+    """
+    present = [path for path in paths if Path(path).exists()]
+    if not present:
+        print("No state files to commit.")
+        return
+
     subprocess.run(["git", "config", "--local", "user.email", "action@github.com"], check=True)
     subprocess.run(["git", "config", "--local", "user.name", "GitHub Action"], check=True)
-    subprocess.run(["git", "add"] + paths, check=True)
+    subprocess.run(["git", "add"] + present, check=True)
     if subprocess.run(["git", "diff", "--staged", "--quiet"]).returncode == 0:
         print("Nothing to commit.")
         return
