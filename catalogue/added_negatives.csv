@@ -19,3 +19,7 @@ vidcruiter download,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Scre
 vidcruiter download,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,ai recruiting software,PHRASE,2026-09-04
 vidcruiter download,EXACT,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,ai recruiting software,PHRASE,2026-09-04
 vidcruiter download,PHRASE,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,ai recruiting software,PHRASE,2026-09-04
+jobsites,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,Category,job recruiting websites,EXACT,2026-09-04
+jobsites,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,Category,job recruiting websites,EXACT,2026-09-04
+jobsites,EXACT,account-level negative keywords list,SEA_Polymer-Search,Category,job recruiting websites,EXACT,2026-09-04
+jobsites,PHRASE,account-level negative keywords list,SEA_Polymer-Search,Category,job recruiting websites,EXACT,2026-09-04
