@@ -1,0 +1,65 @@
+name: Daily Review
+
+on:
+  schedule:
+    # 15:00 UTC = 07:00 PST / 08:00 PDT. The search terms report refreshes
+    # around 06:00 PST, so this clears the window.
+    - cron: '0 15 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Classify and log, post nothing to Slack'
+        required: false
+        type: boolean
+        default: false
+      limit:
+        description: 'Classify at most N new terms (blank for all)'
+        required: false
+        type: string
+        default: ''
+
+concurrency:
+  group: daily-review
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GOOGLE_ADS_DEVELOPER_TOKEN: ${{ secrets.GOOGLE_ADS_DEVELOPER_TOKEN }}
+      GOOGLE_ADS_CLIENT_ID:       ${{ secrets.GOOGLE_ADS_CLIENT_ID }}
+      GOOGLE_ADS_CLIENT_SECRET:   ${{ secrets.GOOGLE_ADS_CLIENT_SECRET }}
+      GOOGLE_ADS_REFRESH_TOKEN:   ${{ secrets.GOOGLE_ADS_REFRESH_TOKEN }}
+      GOOGLE_ADS_CUSTOMER_ID:     ${{ secrets.GOOGLE_ADS_CUSTOMER_ID }}
+      ANTHROPIC_API_KEY:          ${{ secrets.ANTHROPIC_API_KEY }}
+      SLACK_BOT_TOKEN:            ${{ secrets.SLACK_BOT_TOKEN }}
+      SLACK_PAID_ADS_CHANNEL_ID:  ${{ secrets.SLACK_PAID_ADS_CHANNEL_ID }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r scripts/requirements.txt
+
+      - name: Run daily review
+        run: |
+          ARGS=""
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          if [ -n "${{ inputs.limit }}" ]; then
+            ARGS="$ARGS --limit ${{ inputs.limit }}"
+          fi
+          python scripts/daily_review.py $ARGS
+
+      - name: Notify Slack on failure
+        if: failure()
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_RUN_ID:     ${{ github.run_id }}
+        run: python scripts/slack_run_failed.py daily_review

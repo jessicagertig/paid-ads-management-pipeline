@@ -1,0 +1,80 @@
+name: Handle Slack Action
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'approve, reject, or hard-reject'
+        required: true
+        type: string
+      search_term:
+        description: 'Percent-encoded search term from the button value'
+        required: true
+        type: string
+      channel_id:
+        description: 'Slack channel the message lives in'
+        required: false
+        type: string
+        default: ''
+      message_ts:
+        description: 'Slack message ts to update in place'
+        required: false
+        type: string
+        default: ''
+      user_name:
+        description: 'Slack user who clicked'
+        required: false
+        type: string
+        default: ''
+
+concurrency:
+  # Serialised across every action. Each one commits, so parallel runs would
+  # race on the same CSVs and on git push.
+  group: handle-action
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  handle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GOOGLE_ADS_DEVELOPER_TOKEN: ${{ secrets.GOOGLE_ADS_DEVELOPER_TOKEN }}
+      GOOGLE_ADS_CLIENT_ID:       ${{ secrets.GOOGLE_ADS_CLIENT_ID }}
+      GOOGLE_ADS_CLIENT_SECRET:   ${{ secrets.GOOGLE_ADS_CLIENT_SECRET }}
+      GOOGLE_ADS_REFRESH_TOKEN:   ${{ secrets.GOOGLE_ADS_REFRESH_TOKEN }}
+      GOOGLE_ADS_CUSTOMER_ID:     ${{ secrets.GOOGLE_ADS_CUSTOMER_ID }}
+      SLACK_BOT_TOKEN:            ${{ secrets.SLACK_BOT_TOKEN }}
+      SLACK_PAID_ADS_CHANNEL_ID:  ${{ secrets.SLACK_PAID_ADS_CHANNEL_ID }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r scripts/requirements.txt
+
+      - name: Handle the click
+        env:
+          ACTION:      ${{ inputs.action }}
+          SEARCH_TERM: ${{ inputs.search_term }}
+          CHANNEL_ID:  ${{ inputs.channel_id }}
+          MESSAGE_TS:  ${{ inputs.message_ts }}
+          USER_NAME:   ${{ inputs.user_name }}
+        run: |
+          DECODED=$(python -c 'import sys,urllib.parse; print(urllib.parse.unquote(sys.argv[1]))' "$SEARCH_TERM")
+          python scripts/handle_action.py \
+            --action "$ACTION" \
+            --search-term "$DECODED" \
+            --channel-id "$CHANNEL_ID" \
+            --message-ts "$MESSAGE_TS" \
+            --user-name "$USER_NAME"
+
+      - name: Notify Slack on failure
+        if: failure()
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_RUN_ID:     ${{ github.run_id }}
+        run: python scripts/slack_run_failed.py handle_action
