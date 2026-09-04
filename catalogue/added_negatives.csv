@@ -1,0 +1,5 @@
+search_term,match_type,shared_set_name,campaign_name,ad_group_name,matched_keyword,matched_keyword_match_type,added_on
+alberta recruitment,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,Category,job posting websites,PHRASE,2026-09-04
+alberta recruitment,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,Category,job posting websites,PHRASE,2026-09-04
+alberta recruitment,EXACT,account-level negative keywords list,SEA_Polymer-Search,Category,job posting websites,PHRASE,2026-09-04
+alberta recruitment,PHRASE,account-level negative keywords list,SEA_Polymer-Search,Category,job posting websites,PHRASE,2026-09-04
