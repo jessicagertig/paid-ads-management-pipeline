@@ -11,3 +11,7 @@ ats scan,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,autom
 ats scan,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-04
 ats scan,EXACT,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-04
 ats scan,PHRASE,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-04
+ats pass,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-04
+ats pass,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-04
+ats pass,EXACT,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-04
+ats pass,PHRASE,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-04
