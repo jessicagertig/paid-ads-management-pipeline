@@ -3,3 +3,7 @@ alberta recruitment,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,Categor
 alberta recruitment,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,Category,job posting websites,PHRASE,2026-09-04
 alberta recruitment,EXACT,account-level negative keywords list,SEA_Polymer-Search,Category,job posting websites,PHRASE,2026-09-04
 alberta recruitment,PHRASE,account-level negative keywords list,SEA_Polymer-Search,Category,job posting websites,PHRASE,2026-09-04
+free ats resume scan,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-04
+free ats resume scan,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-04
+free ats resume scan,EXACT,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-04
+free ats resume scan,PHRASE,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-04
