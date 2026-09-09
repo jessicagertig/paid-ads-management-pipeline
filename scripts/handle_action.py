@@ -76,7 +76,7 @@ def do_approve(client, term, channel_id, message_ts, user_name) -> int:
         print("Already present everywhere; nothing written.")
 
     added_on = date.today().isoformat()
-    record_added_negatives([{
+    added_rows = [{
         "search_term":    term["search_term"],
         "match_type":     entry["match_type"],
         "shared_set_name": entry["list"],
@@ -85,7 +85,8 @@ def do_approve(client, term, channel_id, message_ts, user_name) -> int:
         "matched_keyword": term["keyword_text"],
         "matched_keyword_match_type": term["keyword_match_type"],
         "added_on":       added_on,
-    } for entry in result["written"]])
+    } for entry in result["written"]]
+    record_added_negatives(added_rows)
 
     lists_written = sorted({entry["list"] for entry in result["written"]}) or list(NEGATIVE_LIST_NAMES)
     blocks, color, fallback = build_executed_blocks(term, lists_written, added_on, user_name)
@@ -98,7 +99,8 @@ def do_approve(client, term, channel_id, message_ts, user_name) -> int:
         print(f"skipped: {note}")
 
     commit_and_push([str(ADDED_NEGATIVES)],
-                    f"Add negative keyword: {term['search_term']}")
+                    f"Add negative keyword: {term['search_term']}",
+                    reapply=lambda: record_added_negatives(added_rows))
     return 0
 
 
@@ -106,13 +108,16 @@ def do_reject(term, channel_id, message_ts, user_name, reject_type) -> int:
     rejected_on = date.today().isoformat()
     last_counted = max(term["days"], default=rejected_on)
 
-    record_rejection(
-        term["search_term"],
-        spend_at_rejection=term["total_cost"],
-        last_counted_date=last_counted,
-        reject_type=reject_type,
-        rejected_on=rejected_on,
-    )
+    def write_rejection() -> None:
+        record_rejection(
+            term["search_term"],
+            spend_at_rejection=term["total_cost"],
+            last_counted_date=last_counted,
+            reject_type=reject_type,
+            rejected_on=rejected_on,
+        )
+
+    write_rejection()
 
     blocks, color, fallback = build_rejected_blocks(
         term, rejected_on, reject_type=reject_type, user_name=user_name)
@@ -124,7 +129,8 @@ def do_reject(term, channel_id, message_ts, user_name, reject_type) -> int:
           f"at ${term['total_cost']:.2f}")
 
     commit_and_push([str(REJECTED_TERMS)],
-                    f"{label.capitalize()} reject: {term['search_term']}")
+                    f"{label.capitalize()} reject: {term['search_term']}",
+                    reapply=write_rejection)
     return 0
 
 

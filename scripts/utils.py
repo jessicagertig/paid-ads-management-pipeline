@@ -364,12 +364,24 @@ def extract_text_from_response(response) -> str:
 # Git
 # ---------------------------------------------------------------------------
 
-def commit_and_push(paths: list[str], message: str) -> None:
+def commit_and_push(paths: list[str], message: str, reapply=None,
+                    attempts: int = 5) -> None:
     """Stage, commit and push. No-op when nothing changed.
 
     Paths that do not exist are skipped rather than passed to git, which exits
     128 on a missing pathspec. A state file only appears once its first row is
     written, so on early runs some of these legitimately do not exist yet.
+
+    Button clicks arrive in bursts, so two runs routinely race on the same CSV.
+    The loser resets to the pushed state and calls ``reapply`` to write its rows
+    onto the winner's file, then commits again. Rebasing instead conflicts,
+    because both runs append to the same end of the file, and a union merge
+    would corrupt rejected_terms.csv, which record_rejection and
+    accrue_rejected_spend rewrite in place rather than append to.
+
+    ``reapply`` must re-perform this run's state writes against whatever is on
+    disk. Without it a lost race has nothing to retry with and raises, rather
+    than dropping the rows silently.
     """
     present = [path for path in paths if Path(path).exists()]
     if not present:
@@ -378,14 +390,32 @@ def commit_and_push(paths: list[str], message: str) -> None:
 
     subprocess.run(["git", "config", "--local", "user.email", "action@github.com"], check=True)
     subprocess.run(["git", "config", "--local", "user.name", "GitHub Action"], check=True)
-    subprocess.run(["git", "add"] + present, check=True)
-    if subprocess.run(["git", "diff", "--staged", "--quiet"]).returncode == 0:
-        print("Nothing to commit.")
-        return
-    subprocess.run(["git", "commit", "-m", message], check=True)
-    subprocess.run(["git", "pull", "--rebase", "--autostash", "origin",
-                    current_branch()], check=True)
-    subprocess.run(["git", "push"], check=True)
+    branch = current_branch()
+
+    for attempt in range(1, attempts + 1):
+        subprocess.run(["git", "add"] + present, check=True)
+        if subprocess.run(["git", "diff", "--staged", "--quiet"]).returncode == 0:
+            print("Nothing to commit.")
+            return
+        subprocess.run(["git", "commit", "-m", message], check=True)
+        subprocess.run(["git", "fetch", "origin", branch], check=True)
+
+        rebased = subprocess.run(["git", "rebase", f"origin/{branch}"]).returncode == 0
+        if rebased and subprocess.run(["git", "push"]).returncode == 0:
+            return
+        if not rebased:
+            subprocess.run(["git", "rebase", "--abort"], check=False)
+
+        if reapply is None:
+            raise RuntimeError(f"lost a push race on {', '.join(present)} "
+                               f"and has no reapply callback to retry with")
+
+        print(f"attempt {attempt}/{attempts}: another run pushed first; "
+              f"re-applying onto {branch}", file=sys.stderr)
+        subprocess.run(["git", "reset", "--hard", f"origin/{branch}"], check=True)
+        reapply()
+
+    raise RuntimeError(f"could not push {', '.join(present)} after {attempts} attempts")
 
 
 def current_branch() -> str:
