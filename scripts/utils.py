@@ -256,6 +256,53 @@ def post_to_slack(blocks: list, color: str, fallback_text: str,
     return data.get("ts")
 
 
+def fetch_message_blocks(channel: str, message_ts: str):
+    """Read one message's own blocks, colour and fallback text back from Slack.
+
+    Editing a card in place means keeping what it already says, so the blocks
+    come from the message itself rather than being rebuilt from today's figures,
+    which have moved on since it was posted.
+
+    Returns (blocks, color, fallback_text), or None when the message cannot be
+    read. None means leave the card alone: overwriting it with a rebuilt one is
+    the behaviour this replaced.
+    """
+    token = os.environ.get("SLACK_BOT_TOKEN")
+    if not token:
+        print("ERROR: SLACK_BOT_TOKEN not set", file=sys.stderr)
+        return None
+
+    response = requests.get(
+        "https://slack.com/api/conversations.history",
+        headers={"Authorization": f"Bearer {token}"},
+        params={"channel": channel, "latest": message_ts,
+                "inclusive": "true", "limit": 1},
+        timeout=15,
+    )
+    data = response.json() if response.content else {}
+    messages = data.get("messages") or []
+    if not data.get("ok") or not messages:
+        print(f"ERROR: could not read message {message_ts}: "
+              f"{data.get('error', response.status_code)}", file=sys.stderr)
+        return None
+
+    message = messages[0]
+    if message.get("ts") != message_ts:
+        print(f"ERROR: asked for message {message_ts}, got {message.get('ts')}",
+              file=sys.stderr)
+        return None
+
+    # Term cards are posted as a single coloured attachment, so the blocks live
+    # there rather than on the message.
+    attachment = (message.get("attachments") or [{}])[0]
+    blocks = attachment.get("blocks") or message.get("blocks") or []
+    if not blocks:
+        print(f"ERROR: message {message_ts} has no blocks to keep", file=sys.stderr)
+        return None
+
+    return blocks, attachment.get("color", ""), message.get("text", "")
+
+
 def update_slack_message(channel: str, message_ts: str, blocks: list,
                          color: str, fallback_text: str) -> bool:
     """Replace an existing message in place. Used to retire the buttons."""
