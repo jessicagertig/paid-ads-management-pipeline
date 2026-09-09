@@ -23,3 +23,7 @@ jobsites,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,Category,job recru
 jobsites,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,Category,job recruiting websites,EXACT,2026-09-04
 jobsites,EXACT,account-level negative keywords list,SEA_Polymer-Search,Category,job recruiting websites,EXACT,2026-09-04
 jobsites,PHRASE,account-level negative keywords list,SEA_Polymer-Search,Category,job recruiting websites,EXACT,2026-09-04
+atss checker,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-09
+atss checker,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-09
+atss checker,EXACT,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-09
+atss checker,PHRASE,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-09
