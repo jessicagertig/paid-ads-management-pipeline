@@ -259,41 +259,29 @@ def build_term_blocks(term, channel_id="", message_ts="") -> tuple[list, str, st
     return blocks, COLOR_TERM, fallback
 
 
-def build_executed_blocks(term, lists_written, added_on, user_name=None) -> tuple[list, str, str]:
-    """Replaces a term message after a successful write. Buttons retired."""
-    who = f" by {user_name}" if user_name else ""
-    blocks = [
-        _header(f"✅ Added — {term['search_term']}"),
-        _section(
-            f"*Search term:* `{term['search_term']}`\n"
-            f"*Added as:* exact and phrase\n"
-            f"*Lists:* " + ", ".join(f"`{name}`" for name in lists_written) + "\n"
-            f"*Campaign:* {term['campaign_name']}  |  *Ad group:* {term['ad_group_name']}"
-        ),
-        _context(f"Approved and executed{who} on {added_on}."),
-    ]
-    return blocks, COLOR_TERM, f"Added negative keyword: {term['search_term']}"
+def retire_buttons(blocks: list, note: str) -> list:
+    """The card exactly as it stands, minus its buttons, plus what was decided.
+
+    A click is an edit, not a rewrite: the spend figures, the case for and
+    against and the proposed negative all stay on the card, so it still reads
+    as the thing that was acted on. Only the actions block goes, and the
+    decision is recorded underneath it.
+    """
+    kept = [block for block in blocks if block.get("type") != "actions"]
+    return kept + [_context(note)]
 
 
-def build_rejected_blocks(term, rejected_on, reject_type="soft",
-                          user_name=None) -> tuple[list, str, str]:
-    """Replaces a term message after rejection. Buttons retired."""
-    who = f" by {user_name}" if user_name else ""
-    is_hard = reject_type == "hard"
+def approved_note(added_on: str, lists_written) -> str:
+    """The decision line for Approve & Execute."""
+    lists = ", ".join(f"`{name}`" for name in lists_written)
+    return (f"✅ *Approve & Execute* on {added_on} — "
+            f"added as exact and phrase to {lists}.")
 
-    heading = ("\U0001f515 Never showing again" if is_hard else "\U0001f6ab Rejected")
-    note = ("It will not be surfaced again, whatever it spends."
-            if is_hard else
-            "It will resurface if its spend grows.")
 
-    blocks = [
-        _header(f"{heading} — {term['search_term']}"),
-        _section(
-            f"*Search term:* `{term['search_term']}`\n"
-            f"*Spend at rejection:* ${term['total_cost']:.2f} over 14 days\n"
-            f"*Campaign:* {term['campaign_name']}  |  *Ad group:* {term['ad_group_name']}"
-        ),
-        _context(f"Rejected{who} on {rejected_on}. {note}"),
-    ]
-    label = "Never showing again" if is_hard else "Rejected"
-    return blocks, COLOR_TERM, f"{label}: {term['search_term']}"
+def rejected_note(rejected_on: str, reject_type: str = "soft") -> str:
+    """The decision line for Reject and Never Show Again."""
+    if reject_type == "hard":
+        return (f"🔕 *Never Show Again* on {rejected_on} — "
+                f"it will not be surfaced again, whatever it spends.")
+    return (f"🚫 *Reject* on {rejected_on} — "
+            f"it will resurface if its spend grows.")

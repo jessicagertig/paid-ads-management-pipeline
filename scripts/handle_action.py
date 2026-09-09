@@ -19,7 +19,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from google_ads_read import aggregate_by_term, fetch_search_terms, window_dates
 from google_ads_write import add_negative_keyword
-from slack_messages import build_executed_blocks, build_rejected_blocks
+from slack_messages import approved_note, rejected_note, retire_buttons
 from state import (
     HARD_REJECT,
     SOFT_REJECT,
@@ -31,10 +31,33 @@ from utils import (
     NEGATIVE_LIST_NAMES,
     REJECTED_TERMS,
     commit_and_push,
+    fetch_message_blocks,
     google_ads_client,
     post_error_to_slack,
     update_slack_message,
 )
+
+
+def record_decision(channel_id: str, message_ts: str, note: str) -> bool:
+    """Take the buttons off the clicked card and write the decision on it.
+
+    The card is edited, never rebuilt: its blocks are read back from Slack so
+    everything it was posted with survives. A message that cannot be read is
+    left untouched, which keeps its buttons and lets the click be repeated.
+    """
+    if not (channel_id and message_ts):
+        print("WARN: no channel or message ts on the button; card left as it is",
+              file=sys.stderr)
+        return False
+
+    existing = fetch_message_blocks(channel_id, message_ts)
+    if existing is None:
+        print(f"WARN: message {message_ts} left as it is", file=sys.stderr)
+        return False
+
+    blocks, color, fallback = existing
+    return update_slack_message(channel_id, message_ts,
+                                retire_buttons(blocks, note), color, fallback)
 
 
 def term_record(client, search_term: str) -> dict:
@@ -89,9 +112,7 @@ def do_approve(client, term, channel_id, message_ts, user_name) -> int:
     record_added_negatives(added_rows)
 
     lists_written = sorted({entry["list"] for entry in result["written"]}) or list(NEGATIVE_LIST_NAMES)
-    blocks, color, fallback = build_executed_blocks(term, lists_written, added_on, user_name)
-    if channel_id and message_ts:
-        update_slack_message(channel_id, message_ts, blocks, color, fallback)
+    record_decision(channel_id, message_ts, approved_note(added_on, lists_written))
 
     for entry in result["written"]:
         print(f"wrote {entry['match_type']:6} -> {entry['list']}")
@@ -119,10 +140,8 @@ def do_reject(term, channel_id, message_ts, user_name, reject_type) -> int:
 
     write_rejection()
 
-    blocks, color, fallback = build_rejected_blocks(
-        term, rejected_on, reject_type=reject_type, user_name=user_name)
-    if channel_id and message_ts:
-        update_slack_message(channel_id, message_ts, blocks, color, fallback)
+    record_decision(channel_id, message_ts,
+                    rejected_note(rejected_on, reject_type=reject_type))
 
     label = "hard" if reject_type == HARD_REJECT else "soft"
     print(f"recorded {label} rejection of {term['search_term']!r} "
