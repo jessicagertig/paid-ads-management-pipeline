@@ -199,7 +199,13 @@ def button_value(search_term: str, channel_id: str, message_ts: str) -> str:
 
 
 def build_term_blocks(term, channel_id="", message_ts="") -> tuple[list, str, str]:
-    """One flagged term with Approve & Execute, Reject and Never Show Again."""
+    """One flagged term with Approve & Execute, Reject and Never Show Again.
+
+    Block order is deliberate. Slack collapses a long message behind "Show more"
+    based on total height, so the buttons sit directly under a compact two-line
+    summary. Everything a click does not depend on - the cases, the proposal,
+    the resurfacing note - goes below them, where collapsing costs nothing.
+    """
     term_id = term_id_for(term["search_term"])
     value = button_value(term["search_term"], channel_id, message_ts)
     priority = term["priority"]
@@ -208,27 +214,38 @@ def build_term_blocks(term, channel_id="", message_ts="") -> tuple[list, str, st
     blocks = [
         _header(f"{emoji} {priority} — {term['search_term']}"),
         _section(
-            f"*Search term:* `{term['search_term']}`\n"
-            f"*Campaign:* {term['campaign_name']}\n"
-            f"*Ad group:* {term['ad_group_name']}\n"
-            f"*Matched keyword:* `{term['keyword_text']}` "
-            f"({term['keyword_match_type']} match)"
+            f"${term['week_cost']:.2f} over 7 days, {term['week_clicks']} clicks  ·  "
+            f"${term['day_cost']:.2f} latest day  ·  "
+            f"${term['total_cost']:.2f} over 14 days\n"
+            f"{term['ad_group_name']}  ·  matched `{term['keyword_text']}` "
+            f"({term['keyword_match_type']})"
         ),
+        {
+            "type": "actions",
+            "elements": [
+                {"type": "button",
+                 "text": {"type": "plain_text", "text": "Approve & Execute", "emoji": True},
+                 "style": "primary",
+                 "action_id": f"gads_approve_{term_id}",
+                 "value": value},
+                {"type": "button",
+                 "text": {"type": "plain_text", "text": "Reject", "emoji": True},
+                 "action_id": f"gads_reject_{term_id}",
+                 "value": value},
+                {"type": "button",
+                 "text": {"type": "plain_text", "text": "Never Show Again", "emoji": True},
+                 "style": "danger",
+                 "action_id": f"gads_hardreject_{term_id}",
+                 "value": value},
+            ],
+        },
         _section(
-            f"*Spend*\n"
-            f"• Latest day: ${term['day_cost']:.2f}, {term['day_clicks']} clicks\n"
-            f"• Last 7 days: ${term['week_cost']:.2f}, {term['week_clicks']} clicks\n"
-            f"• Last 14 days: ${term['total_cost']:.2f}, {term['total_clicks']} clicks, "
-            f"{term['total_impressions']} impressions"
+            f"*For* {term['case_for']}\n\n"
+            f"*Against* {term['case_against']}"
         ),
-        _section(
-            f"*Case for adding*\n{term['case_for']}\n\n"
-            f"*Case against*\n{term['case_against']}"
-        ),
-        _section(
-            "*Proposed negative keyword*\n"
-            f"`{term['search_term']}` as *exact* and *phrase*, added to both "
-            + " and ".join(f"`{name}`" for name in NEGATIVE_LIST_NAMES)
+        _context(
+            f"{term['campaign_name']}  ·  {term['total_impressions']} impressions  ·  "
+            f"adds `{term['search_term']}` as exact and phrase to both lists"
         ),
     ]
 
@@ -237,26 +254,6 @@ def build_term_blocks(term, channel_id="", message_ts="") -> tuple[list, str, st
             f"Previously rejected on {term['rejected_on']}. Has cost "
             f"${term['spend_since_rejection']} since."
         ))
-
-    blocks.append({
-        "type": "actions",
-        "elements": [
-            {"type": "button",
-             "text": {"type": "plain_text", "text": "Approve & Execute", "emoji": True},
-             "style": "primary",
-             "action_id": f"gads_approve_{term_id}",
-             "value": value},
-            {"type": "button",
-             "text": {"type": "plain_text", "text": "Reject", "emoji": True},
-             "action_id": f"gads_reject_{term_id}",
-             "value": value},
-            {"type": "button",
-             "text": {"type": "plain_text", "text": "Never Show Again", "emoji": True},
-             "style": "danger",
-             "action_id": f"gads_hardreject_{term_id}",
-             "value": value},
-        ],
-    })
 
     fallback = f"{priority}: {term['search_term']} — ${term['week_cost']:.2f} over 7 days"
     return blocks, COLOR_TERM, fallback

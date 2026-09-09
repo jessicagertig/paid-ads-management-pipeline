@@ -135,8 +135,18 @@ def post_term_message(term, channel) -> str | None:
         return None
 
     value = button_value(term["search_term"], channel, message_ts)
-    for element in blocks[-1]["elements"]:
-        element["value"] = value
+    # Locate the actions block by type. It is not the last block - the cases and
+    # the context line sit below it so the buttons stay above Slack's fold - and
+    # a context block also has an "elements" list, which would silently accept a
+    # value key and then be rejected as invalid_attachments.
+    for block in blocks:
+        if block.get("type") == "actions":
+            for element in block["elements"]:
+                element["value"] = value
+            break
+    else:
+        print("WARN: no actions block found; buttons will not carry the message ts",
+              file=sys.stderr)
     update_slack_message(channel, message_ts, blocks, color, fallback)
     return message_ts
 
