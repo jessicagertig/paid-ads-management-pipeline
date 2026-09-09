@@ -27,3 +27,7 @@ atss checker,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,a
 atss checker,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-09
 atss checker,EXACT,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-09
 atss checker,PHRASE,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-09
+oneforma official website,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,Category,job posting websites,PHRASE,2026-09-09
+oneforma official website,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,Category,job posting websites,PHRASE,2026-09-09
+oneforma official website,EXACT,account-level negative keywords list,SEA_Polymer-Search,Category,job posting websites,PHRASE,2026-09-09
+oneforma official website,PHRASE,account-level negative keywords list,SEA_Polymer-Search,Category,job posting websites,PHRASE,2026-09-09
