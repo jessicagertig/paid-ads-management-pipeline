@@ -237,14 +237,18 @@ def main() -> None:
             posted += 1
     print(f"posted {posted} term message(s)")
 
-    record_classifications({term: verdict["is_job_seeker"]
-                            for term, verdict in new_verdicts.items()}, run_date)
-    accrue_rejected_spend(daily_spend_by_term(records))
+    def write_state() -> None:
+        record_classifications({term: verdict["is_job_seeker"]
+                                for term, verdict in new_verdicts.items()}, run_date)
+        accrue_rejected_spend(daily_spend_by_term(records))
+
+    write_state()
 
     if not args.no_commit:
         commit_and_push(
             [str(CLASSIFIED_TERMS), str(REJECTED_TERMS)],
             f"Daily review {run_date}: {len(new_verdicts)} classified, {posted} flagged",
+            reapply=write_state,
         )
 
 

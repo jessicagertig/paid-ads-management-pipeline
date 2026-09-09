@@ -27,11 +27,11 @@ on:
         type: string
         default: ''
 
-concurrency:
-  # Serialised across every action. Each one commits, so parallel runs would
-  # race on the same CSVs and on git push.
-  group: handle-action
-  cancel-in-progress: false
+# No concurrency group. GitHub keeps only one pending run per group, so a burst
+# of clicks evicted every click still queued behind the running one - cancelled
+# runs write nothing, update no message, and do not fire the failure notify step
+# below. commit_and_push retries the lost push race instead, so runs are free to
+# overlap.
 
 permissions:
   contents: write
