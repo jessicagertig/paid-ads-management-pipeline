@@ -51,3 +51,7 @@ ats checking,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,a
 ats checking,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-09
 ats checking,EXACT,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-09
 ats checking,PHRASE,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-09
+ibm knockri,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,ai recruiting software,PHRASE,2026-09-10
+ibm knockri,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,ai recruiting software,PHRASE,2026-09-10
+ibm knockri,EXACT,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,ai recruiting software,PHRASE,2026-09-10
+ibm knockri,PHRASE,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,ai recruiting software,PHRASE,2026-09-10
