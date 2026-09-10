@@ -55,3 +55,7 @@ ibm knockri,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,ai
 ibm knockri,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,ai recruiting software,PHRASE,2026-09-10
 ibm knockri,EXACT,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,ai recruiting software,PHRASE,2026-09-10
 ibm knockri,PHRASE,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,ai recruiting software,PHRASE,2026-09-10
+check ats,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-10
+check ats,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-10
+check ats,EXACT,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-10
+check ats,PHRASE,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-10
