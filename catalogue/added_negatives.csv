@@ -135,3 +135,7 @@ ats scan check,EXACT,Candidate Traffic - Exclude,(not in the last 14 days),(not 
 ats scan check,PHRASE,Candidate Traffic - Exclude,(not in the last 14 days),(not in the last 14 days),,,2026-09-15
 ats scan check,EXACT,account-level negative keywords list,(not in the last 14 days),(not in the last 14 days),,,2026-09-15
 ats scan check,PHRASE,account-level negative keywords list,(not in the last 14 days),(not in the last 14 days),,,2026-09-15
+place looking for workers,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,Category,find job candidates,EXACT,2026-09-15
+place looking for workers,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,Category,find job candidates,EXACT,2026-09-15
+place looking for workers,EXACT,account-level negative keywords list,SEA_Polymer-Search,Category,find job candidates,EXACT,2026-09-15
+place looking for workers,PHRASE,account-level negative keywords list,SEA_Polymer-Search,Category,find job candidates,EXACT,2026-09-15
