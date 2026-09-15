@@ -139,3 +139,7 @@ place looking for workers,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,C
 place looking for workers,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,Category,find job candidates,EXACT,2026-09-15
 place looking for workers,EXACT,account-level negative keywords list,SEA_Polymer-Search,Category,find job candidates,EXACT,2026-09-15
 place looking for workers,PHRASE,account-level negative keywords list,SEA_Polymer-Search,Category,find job candidates,EXACT,2026-09-15
+zip recruitment canada,EXACT,Candidate Traffic - Exclude,(not in the last 14 days),(not in the last 14 days),,,2026-09-15
+zip recruitment canada,PHRASE,Candidate Traffic - Exclude,(not in the last 14 days),(not in the last 14 days),,,2026-09-15
+zip recruitment canada,EXACT,account-level negative keywords list,(not in the last 14 days),(not in the last 14 days),,,2026-09-15
+zip recruitment canada,PHRASE,account-level negative keywords list,(not in the last 14 days),(not in the last 14 days),,,2026-09-15
