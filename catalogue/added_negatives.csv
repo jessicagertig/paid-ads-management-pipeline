@@ -147,3 +147,7 @@ worked7 com,EXACT,Candidate Traffic - Exclude,(not in the last 14 days),(not in 
 worked7 com,PHRASE,Candidate Traffic - Exclude,(not in the last 14 days),(not in the last 14 days),,,2026-09-15
 worked7 com,EXACT,account-level negative keywords list,(not in the last 14 days),(not in the last 14 days),,,2026-09-15
 worked7 com,PHRASE,account-level negative keywords list,(not in the last 14 days),(not in the last 14 days),,,2026-09-15
+thejobalert,EXACT,Candidate Traffic - Exclude,(not in the last 14 days),(not in the last 14 days),,,2026-09-15
+thejobalert,PHRASE,Candidate Traffic - Exclude,(not in the last 14 days),(not in the last 14 days),,,2026-09-15
+thejobalert,EXACT,account-level negative keywords list,(not in the last 14 days),(not in the last 14 days),,,2026-09-15
+thejobalert,PHRASE,account-level negative keywords list,(not in the last 14 days),(not in the last 14 days),,,2026-09-15
