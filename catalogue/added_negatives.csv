@@ -83,3 +83,7 @@ help wanted ads,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,Category,po
 help wanted ads,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,Category,post a job online,PHRASE,2026-09-15
 help wanted ads,EXACT,account-level negative keywords list,SEA_Polymer-Search,Category,post a job online,PHRASE,2026-09-15
 help wanted ads,PHRASE,account-level negative keywords list,SEA_Polymer-Search,Category,post a job online,PHRASE,2026-09-15
+ats enhancer,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-15
+ats enhancer,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-15
+ats enhancer,EXACT,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-15
+ats enhancer,PHRASE,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-15
