@@ -119,3 +119,7 @@ cazvid que es,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,
 cazvid que es,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,ai recruiting software,PHRASE,2026-09-15
 cazvid que es,EXACT,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,ai recruiting software,PHRASE,2026-09-15
 cazvid que es,PHRASE,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,ai recruiting software,PHRASE,2026-09-15
+atschecker,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-15
+atschecker,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-15
+atschecker,EXACT,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-15
+atschecker,PHRASE,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-15
