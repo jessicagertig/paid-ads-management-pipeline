@@ -87,3 +87,7 @@ ats enhancer,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,a
 ats enhancer,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-15
 ats enhancer,EXACT,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-15
 ats enhancer,PHRASE,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-15
+vmock ai,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-15
+vmock ai,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-15
+vmock ai,EXACT,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-15
+vmock ai,PHRASE,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-15
