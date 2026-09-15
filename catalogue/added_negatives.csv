@@ -67,3 +67,7 @@ resuscan,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,ai re
 resuscan,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-15
 resuscan,EXACT,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-15
 resuscan,PHRASE,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-15
+cvscoring,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-15
+cvscoring,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-15
+cvscoring,EXACT,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-15
+cvscoring,PHRASE,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-15
