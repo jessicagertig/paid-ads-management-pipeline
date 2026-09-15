@@ -99,3 +99,7 @@ ats friendly test,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screen
 ats friendly test,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-15
 ats friendly test,EXACT,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-15
 ats friendly test,PHRASE,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-15
+ats checkers,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-15
+ats checkers,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-15
+ats checkers,EXACT,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-15
+ats checkers,PHRASE,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-15
