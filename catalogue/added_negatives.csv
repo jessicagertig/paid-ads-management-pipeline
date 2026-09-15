@@ -91,3 +91,7 @@ vmock ai,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,ai re
 vmock ai,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-15
 vmock ai,EXACT,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-15
 vmock ai,PHRASE,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-15
+knockri ibm,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,ai recruiting software,PHRASE,2026-09-15
+knockri ibm,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,ai recruiting software,PHRASE,2026-09-15
+knockri ibm,EXACT,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,ai recruiting software,PHRASE,2026-09-15
+knockri ibm,PHRASE,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,ai recruiting software,PHRASE,2026-09-15
