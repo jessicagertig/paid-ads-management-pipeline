@@ -143,3 +143,7 @@ zip recruitment canada,EXACT,Candidate Traffic - Exclude,(not in the last 14 day
 zip recruitment canada,PHRASE,Candidate Traffic - Exclude,(not in the last 14 days),(not in the last 14 days),,,2026-09-15
 zip recruitment canada,EXACT,account-level negative keywords list,(not in the last 14 days),(not in the last 14 days),,,2026-09-15
 zip recruitment canada,PHRASE,account-level negative keywords list,(not in the last 14 days),(not in the last 14 days),,,2026-09-15
+worked7 com,EXACT,Candidate Traffic - Exclude,(not in the last 14 days),(not in the last 14 days),,,2026-09-15
+worked7 com,PHRASE,Candidate Traffic - Exclude,(not in the last 14 days),(not in the last 14 days),,,2026-09-15
+worked7 com,EXACT,account-level negative keywords list,(not in the last 14 days),(not in the last 14 days),,,2026-09-15
+worked7 com,PHRASE,account-level negative keywords list,(not in the last 14 days),(not in the last 14 days),,,2026-09-15
