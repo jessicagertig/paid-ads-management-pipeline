@@ -171,3 +171,7 @@ skills syncer com,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screen
 skills syncer com,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-17
 skills syncer com,EXACT,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-17
 skills syncer com,PHRASE,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,ai resume screening,PHRASE,2026-09-17
+atc checker,EXACT,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-17
+atc checker,PHRASE,Candidate Traffic - Exclude,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-17
+atc checker,EXACT,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-17
+atc checker,PHRASE,account-level negative keywords list,SEA_Polymer-Search,AI-Screening,automated resume screening,EXACT,2026-09-17
