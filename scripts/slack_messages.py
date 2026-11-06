@@ -245,7 +245,7 @@ def build_term_blocks(term, channel_id="", message_ts="") -> tuple[list, str, st
         ),
         _context(
             f"{term['campaign_name']}  ·  {term['total_impressions']} impressions  ·  "
-            f"adds `{term['search_term']}` as exact and phrase to both lists"
+            f"adds `{term['search_term']}` as exact to both lists"
         ),
     ]
 
@@ -275,7 +275,7 @@ def approved_note(added_on: str, lists_written) -> str:
     """The decision line for Approve & Execute."""
     lists = ", ".join(f"`{name}`" for name in lists_written)
     return (f"✅ *Approve & Execute* on {added_on} — "
-            f"added as exact and phrase to {lists}.")
+            f"added as exact to {lists}.")
 
 
 def rejected_note(rejected_on: str, reject_type: str = "soft") -> str:

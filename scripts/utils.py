@@ -49,8 +49,8 @@ NEGATIVE_LIST_NAMES = (
     "account-level negative keywords list",
 )
 
-# Both match types are added for every approved term.
-NEGATIVE_MATCH_TYPES = ("EXACT", "PHRASE")
+# Every approved term is added as exact only.
+NEGATIVE_MATCH_TYPES = ("EXACT",)
 
 # KeywordInfo.text limits, enforced by the API.
 KEYWORD_TEXT_MAX_CHARS = 80

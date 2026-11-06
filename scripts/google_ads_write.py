@@ -2,8 +2,7 @@
 """
 google_ads_write.py - Adding negative keywords.
 
-Approved terms go to BOTH lists as BOTH exact and phrase - four operations per
-term. Both targets are SharedSets (one NEGATIVE_KEYWORDS, one
+Approved terms go to BOTH lists as exact - two operations per term. Both targets are SharedSets (one NEGATIVE_KEYWORDS, one
 ACCOUNT_LEVEL_NEGATIVE_KEYWORDS), so both take the same
 SharedCriterionService.MutateSharedCriteria path.
 
@@ -43,7 +42,7 @@ def _already_present(search_term, match_type, list_name, existing_negatives) -> 
 
 
 def add_negative_keyword(client, search_term, validate_only=False) -> dict:
-    """Add one term to both lists as exact and phrase.
+    """Add one term to both lists as exact.
 
     Returns {"ok", "written", "skipped", "error"}.
     """
