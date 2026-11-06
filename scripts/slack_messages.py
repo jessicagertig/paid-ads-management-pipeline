@@ -98,7 +98,7 @@ def build_summary_blocks(run_date, newest_date, totals, by_ad_group, daily_budge
         f"• {counts['terms_seen']} distinct search terms in the last 14 days\n"
         f"• {counts['already_covered']} already covered by an existing negative\n"
         f"• {counts['newly_classified']} newly classified this run\n"
-        f"• {counts['flagged']} flagged as job-seeker intent\n"
+        f"• {counts['flagged']} offered as possible negatives\n"
         f"• {counts['awaiting']} awaiting a click"
     ))
 
@@ -284,4 +284,4 @@ def rejected_note(rejected_on: str, reject_type: str = "soft") -> str:
         return (f"🔕 *Never Show Again* on {rejected_on} — "
                 f"it will not be surfaced again, whatever it spends.")
     return (f"🚫 *Reject* on {rejected_on} — "
-            f"it will resurface if its spend grows.")
+            f"it will be offered again the next day it matches.")

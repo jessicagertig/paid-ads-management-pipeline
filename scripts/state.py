@@ -24,9 +24,8 @@ REJECTED_COLUMNS = [
     "spend_since_rejection", "last_counted_date",
 ]
 
-# A soft reject is "not now" - the term keeps accruing spend and resurfaces if
-# it crosses the HIGH threshold. A hard reject is "never again" - the term is
-# dropped before classification and never resurfaces at any spend.
+# A soft reject is "not now" - the term is offered again the next day it matches.
+# A hard reject is "never again" - the term never resurfaces at any spend.
 SOFT_REJECT = "soft"
 HARD_REJECT = "hard"
 

@@ -2,9 +2,9 @@
 """
 daily_review.py - The scheduled run.
 
-Pulls 14 days of search terms, classifies the ones never seen before, and posts
-three kinds of Slack message: one summary, any keyword concentration alerts, and
-one message per flagged term.
+Pulls 14 days of search terms and posts three kinds of Slack message: one
+summary, any keyword concentration alerts, and one message per term matched on
+the newest day whose text is not its keyword's own text.
 
 Usage:
     python scripts/daily_review.py [--dry-run] [--limit N] [--no-commit]
@@ -12,6 +12,7 @@ Usage:
 
 import argparse
 import sys
+import time
 from datetime import date
 from pathlib import Path
 
@@ -38,14 +39,12 @@ from slack_messages import (
 from state import (
     added_negative_terms,
     accrue_rejected_spend,
-    classified_term_map,
     hard_rejected_terms,
     record_classifications,
     rejected_term_map,
 )
 from utils import (
     CLASSIFIED_TERMS,
-    HIGH_WEEK_SPEND,
     REJECTED_TERMS,
     already_covered,
     commit_and_push,
@@ -67,51 +66,36 @@ def daily_spend_by_term(records) -> dict[str, dict[str, float]]:
     return per_term
 
 
-def select_terms_to_classify(by_term, existing_negatives, classified, added, hard_rejected):
-    """Everything that must not reach the Anthropic API is dropped here.
-
-    Order matters only for the counts; each filter is independent.
-    """
-    to_classify = []
-    covered_count = 0
-
-    for term, entry in by_term.items():
-        if term in hard_rejected:
-            continue                      # never surfaces again, never costs tokens again
-        if term in added:
-            continue                      # already a negative we added
-        if term in classified:
-            continue                      # cached verdict from a previous run
-        if already_covered(term, existing_negatives):
-            covered_count += 1
-            continue                      # an existing negative already blocks it
-        to_classify.append(term)
-
-    return to_classify, covered_count
+def is_keyword_text(term: str, keyword_text: str) -> bool:
+    """True when the search term is the matched keyword itself, ignoring case and spacing."""
+    return " ".join(term.lower().split()) == " ".join(keyword_text.lower().split())
 
 
-def select_terms_to_post(by_term, verdicts, added, hard_rejected, soft_rejected):
-    """Flagged terms worth a Slack message this run.
+def select_terms_to_post(by_term, newest_day_terms, existing_negatives, added,
+                         hard_rejected, soft_rejected):
+    """Every term matched on the newest day that is not its keyword's own text.
 
-    A soft-rejected term returns only once its accrued spend crosses the HIGH
-    threshold; a hard-rejected term never returns.
+    The classifier has no say in what is posted. A soft-rejected term is offered
+    again whenever it matches; a hard-rejected or added term never is.
+    Returns (terms to post, count of terms an existing negative already blocks).
     """
     to_post = []
+    covered_count = 0
     for term, entry in by_term.items():
         if term in hard_rejected or term in added:
             continue
-        if not verdicts.get(term, {}).get("is_job_seeker"):
+        if already_covered(term, existing_negatives):
+            covered_count += 1
+            continue
+        if term not in newest_day_terms:
+            continue
+        if is_keyword_text(term, entry["keyword_text"]):
             continue
 
         record = dict(entry)
-        record["case_for"] = verdicts[term].get("case_for", "")
-        record["case_against"] = verdicts[term].get("case_against", "")
         record["priority"] = priority_for(entry["day_cost"], entry["week_cost"])
 
         if term in soft_rejected:
-            accrued = float(soft_rejected[term]["spend_since_rejection"])
-            if accrued < HIGH_WEEK_SPEND:
-                continue
             record["resurfaced"] = True
             record["rejected_on"] = soft_rejected[term]["rejected_on"]
             record["spend_since_rejection"] = soft_rejected[term]["spend_since_rejection"]
@@ -120,7 +104,7 @@ def select_terms_to_post(by_term, verdicts, added, hard_rejected, soft_rejected)
 
     priority_order = {"CRITICAL": 0, "HIGH": 1, "MEDIUM": 2, "LOW": 3}
     to_post.sort(key=lambda r: (priority_order[r["priority"]], -r["week_cost"]))
-    return to_post
+    return to_post, covered_count
 
 
 def post_term_message(term, channel) -> str | None:
@@ -156,7 +140,7 @@ def main() -> None:
     parser.add_argument("--dry-run", action="store_true",
                         help="classify and print, post nothing to Slack")
     parser.add_argument("--limit", type=int,
-                        help="classify at most N new terms (for a cheap first pass)")
+                        help="post at most N terms (for a cheap first pass)")
     parser.add_argument("--no-commit", action="store_true",
                         help="write the CSVs but do not commit")
     args = parser.parse_args()
@@ -169,33 +153,35 @@ def main() -> None:
     by_term = aggregate_by_term(records, newest_date)
     print(f"{len(records)} rows, {len(by_term)} distinct terms, newest date {newest_date}")
 
-    existing_negatives = fetch_existing_negatives(client)
+    # Campaign and ad group negatives apply only to their own campaign or ad group,
+    # and many belong to paused campaigns, so only the shared lists count as blocking.
+    existing_negatives = [negative for negative in fetch_existing_negatives(client)
+                          if negative["location"].startswith("list:")]
     daily_budget = fetch_daily_budget(client)
     print(f"{len(existing_negatives)} existing negatives, ${daily_budget:.2f} daily budget")
 
-    classified = classified_term_map()
     added = added_negative_terms()
     rejected = rejected_term_map()
     hard_rejected = hard_rejected_terms()
     soft_rejected = {term: row for term, row in rejected.items()
                      if row.get("reject_type") != "hard"}
+    newest_day_terms = {record["search_term"] for record in records
+                        if record["date"] == newest_date}
 
-    to_classify, covered_count = select_terms_to_classify(
-        by_term, existing_negatives, classified, added, hard_rejected)
+    to_post, covered_count = select_terms_to_post(
+        by_term, newest_day_terms, existing_negatives, added, hard_rejected, soft_rejected)
     if args.limit:
-        to_classify = to_classify[:args.limit]
-        print(f"limiting to {len(to_classify)} terms")
-    print(f"{covered_count} already covered by a negative, {len(to_classify)} to classify")
+        to_post = to_post[:args.limit]
+        print(f"limiting to {len(to_post)} terms")
+    print(f"{covered_count} already covered by a negative, {len(to_post)} to post")
 
-    new_verdicts = classify_terms(to_classify) if to_classify else {}
-
-    verdicts = {term: {"is_job_seeker": is_job_seeker}
-                for term, is_job_seeker in classified.items()}
-    verdicts.update(new_verdicts)
-
-    to_post = select_terms_to_post(by_term, verdicts, added, hard_rejected, soft_rejected)
-    # A cached verdict carries no cases, so it cannot be posted as a new message.
-    to_post = [term for term in to_post if term["search_term"] in new_verdicts]
+    # The classifier writes the card's case for and against; it no longer decides
+    # what is posted. Cases are not stored, so every posted term is classified.
+    new_verdicts = classify_terms([term["search_term"] for term in to_post]) if to_post else {}
+    for term in to_post:
+        verdict = new_verdicts.get(term["search_term"], {})
+        term["case_for"] = verdict.get("case_for", "")
+        term["case_against"] = verdict.get("case_against", "")
     print(f"{len(to_post)} terms flagged for posting")
 
     by_keyword = aggregate_by_keyword(records, newest_date)
@@ -245,6 +231,8 @@ def main() -> None:
     for term in to_post:
         if post_term_message(term, channel):
             posted += 1
+        # chat.postMessage allows about 1 message per second per channel.
+        time.sleep(1)
     print(f"posted {posted} term message(s)")
 
     def write_state() -> None:

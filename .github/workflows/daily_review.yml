@@ -13,7 +13,7 @@ on:
         type: boolean
         default: false
       limit:
-        description: 'Classify at most N new terms (blank for all)'
+        description: 'Post at most N terms (blank for all)'
         required: false
         type: string
         default: ''
